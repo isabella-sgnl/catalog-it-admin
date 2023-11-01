@@ -1,0 +1,390 @@
+# Internal Time-Sheet Application Configuration YAML for DS2.0
+displayName: "Internal Time-Sheet Application"
+icon: |
+  PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAxOTk5Ljc1IDEzOTEuNzUiIHdpZHRoPSIyNTAwIiBoZWlnaHQ9IjI1MDAiPjxnIGZpbGw9Im5vbmUiIHN0cm9rZS13aWR0aD0iNzkuNzUiIHN0cm9rZS1taXRlcmxpbWl0PSIxMCI+PHBhdGggZD0iTTIyMC44OCAzOS44OGgxNTU4Yzk5LjU0IDAgMTgxIDgxLjQzIDE4MSAxODF2OTUwYzAgOTkuNTMtODEuNDUgMTgxLTE4MSAxODFoLTE1NThjLTk5LjU0IDAtMTgxLTgxLjQzLTE4MS0xODF2LTk1MGMwLTk5LjU3IDgxLjQ1LTE4MSAxODEtMTgxem0tMTgxIDI5NC4wN2MyNjMuOTQgMCAyOTQuMTEtMTM0LjIyIDI5NC4xMS0yNjYuOTJtMTM1Ny40Mi0xMy41N2MwIDI2My45MSAxMzQuMjMgMjk0LjA3IDI2NyAyOTQuMDdtMS40NyA3MjIuMzVjLTI2My45NCAwLTI5NC4xMSAxMzQuMjItMjk0LjExIDI2OC40M20tMTM1OC44OSAxMy41N2MwLTI2My45MS0xMzIuNzMtMjk0LjA3LTI2Ny0yOTQuMDciIHN0cm9rZT0iIzAwOTljNyIvPjxnIHN0cm9rZT0iI2UyYTg2NCI+PGVsbGlwc2UgY3g9IjEwMDMuNjUiIGN5PSI2ODIuMyIgcng9IjQyOC4zNCIgcnk9IjQyOC4yOSIvPjxwYXRoIGQ9Ik0xMjA4Ljc3IDcyMy4wMkg5NzQuOTlWNDc3LjIxIi8+PC9nPjwvZz48L3N2Zz4=
+description: "Internal Time-Sheet Application as a System of Record"
+address: "graph.microsoft.com"
+defaultSyncFrequency: HOURLY
+defaultSyncMinInterval: 1
+defaultApiCallFrequency: SECONDLY
+defaultApiCallMinInterval: 1
+type: "TimeSheet-1.0.0"
+# Example Config:
+# {"version": 1, "config": {"filters": {}, "requestTimeout": "10s", "azuread": {"apiVersion": "v1.0"}}}
+adapterConfig: "ewoJInZlcnNpb24iOiAxLAoJImNvbmZpZyI6IHsKICAgICAgICAgICAgICAgICJmaWx0ZXJzIjoge30sCgkJInJlcXVlc3RUaW1lb3V0IjogIjEwcyIsCgkJImF6dXJlYWQiOiB7CiAgICAgICAgICAgICAgICAgICAgImFwaVZlcnNpb24iOiAidjEuMCIKICAgICAgICAgICAgICAgIH0KCX0KfQ=="
+# This must match the list of supportedAuthMechanisms specified on the Adapter.
+auth:
+  - oAuth2ClientCredentials:
+      clientId: "{{Input Required: Client-ID}}"
+      scope: "https://graph.microsoft.com/.default"
+      tokenUrl: "https://login.microsoftonline.com/{{Input Required: Tenant-ID}}/oauth2/v2.0/token"
+      authStyle: InParams
+      clientSecret: "{{Input Required: Client-Secret}}"
+entities:
+  # Configuring complex attributes will cap the page size in AAD's API response to 100.
+  # See: https://learn.microsoft.com/en-us/graph/known-issues?view=graph-rest-1.0#some-limitations-apply-to-query-parameters
+  # We use the `$expand` filter to retrieve complex attributes.
+  User:
+    displayName: TimeSheetUser
+    externalId: User
+    description: User Entity in Time Sheet
+    syncFrequency: HOURLY
+    syncMinInterval: 1
+    apiCallFrequency: SECONDLY
+    apiCallMinInterval: 1
+    pageSize: 999
+    pagesOrderedById: false
+    attributes:
+      - name: id
+        externalId: id
+        description: ID of the user
+        type: String
+        indexed: true
+        uniqueId: true
+      - name: userPrincipalName
+        externalId: userPrincipalName
+        type: String
+        indexed: true
+      - name: displayName
+        externalId: displayName
+        type: String
+      - name: givenName
+        externalId: givenName
+        type: String
+      - name: jobTitle
+        externalId: jobTitle
+        type: String
+      - name: mail
+        externalId: mail
+        type: String
+      - name: mobilePhone
+        externalId: mobilePhone
+        type: String
+      - name: officeLocation
+        externalId: officeLocation
+        type: String
+      - name: preferredLanguage
+        externalId: preferredLanguage
+        type: String
+      - name: surname
+        externalId: surname
+        type: String
+      - name: accountEnabled
+        externalId: accountEnabled
+        type: Bool
+      - name: ageGroup
+        externalId: ageGroup
+        type: String
+      - name: city
+        externalId: city
+        type: String
+      - name: companyName
+        externalId: companyName
+        type: String
+      - name: consentProvidedForMinor
+        externalId: consentProvidedForMinor
+        type: String
+      - name: country
+        externalId: country
+        type: String
+      - name: createdDateTime
+        externalId: createdDateTime
+        type: DateTime
+      - name: creationType
+        externalId: creationType
+        type: String
+      - name: deletedDateTime
+        externalId: deletedDateTime
+        type: DateTime
+      - name: department
+        externalId: department
+        type: String
+      - name: employeeHireDate
+        externalId: employeeHireDate
+        type: DateTime
+      - name: employeeId
+        externalId: employeeId
+        type: String
+      - name: employeeType
+        externalId: employeeType
+        type: String
+      - name: externalUserState
+        externalId: externalUserState
+        type: String
+      - name: externalUserStateChangeDateTime
+        externalId: externalUserStateChangeDateTime
+        type: DateTime
+      - name: faxNumber
+        externalId: faxNumber
+        type: String
+      - name: ipAddress
+        externalId: ipAddress
+        type: String
+      - name: isResourceAccount
+        externalId: isResourceAccount
+        type: Bool
+      - name: lastPasswordChangeDateTime
+        externalId: lastPasswordChangeDateTime
+        type: DateTime
+      - name: legalAgeGroupClassification
+        externalId: legalAgeGroupClassification
+        type: String
+      - name: mailNickname
+        externalId: mailNickname
+        type: String
+        # Configuring `manager__id` will cause the page size in the AAD Users API to be capped at 100.
+      - name: manager__id
+        externalId: manager__id
+        type: String
+        indexed: true
+      - name: onPremisesDistinguishedName
+        externalId: onPremisesDistinguishedName
+        type: String
+      - name: onPremisesDomainName
+        externalId: onPremisesDomainName
+        type: String
+      - name: onPremisesImmutableId
+        externalId: onPremisesImmutableId
+        type: String
+      - name: onPremisesLastSyncDateTime
+        externalId: onPremisesLastSyncDateTime
+        type: DateTime
+      - name: onPremisesSamAccountName
+        externalId: onPremisesSamAccountName
+        type: String
+      - name: onPremisesSecurityIdentifier
+        externalId: onPremisessecurityIdentifier
+        type: String
+      - name: onPremisesSyncEnabled
+        externalId: onPremisesSyncEnabled
+        type: Bool
+      - name: onPremisesUserPrincipalName
+        externalId: onPremisesUserPrincipalName
+        type: String
+      - name: passwordPolicies
+        externalId: passwordPolicies
+        type: String
+      - name: postalCode
+        externalId: postalCode
+        type: String
+      - name: preferredDataLocation
+        externalId: preferredDataLocation
+        type: String
+      - name: showInAddressList
+        externalId: showInAddressList
+        type: Bool
+      - name: signInSessionsValidFromDateTime
+        externalId: signInSessionValidFromDateTime
+        type: DateTime
+      - name: state
+        externalId: state
+        type: String
+      - name: streetAddress
+        externalId: streetAddress
+        type: String
+      - name: usageLocation
+        externalId: usageLocation
+        type: String
+      - name: userType
+        externalId: userType
+        type: String
+      - name: businessPhones
+        externalId: businessPhones
+        type: String
+        list: true
+      - name: proxyAddresses
+        externalId: proxyAddresses
+        type: String
+        list: true
+      - name: otherMails
+        externalId: otherMails
+        type: String
+        list: true
+      - name: employeeOrgData__costCenter
+        externalId: employeeOrgData__costCenter
+        type: String
+      - name: employeeOrgData__division
+        externalId: employeeOrgData__division
+        type: String
+      - name: passwordProfile__forceChangePasswordNextSignIn
+        externalId: passwordProfile__forceChangePasswordNextSignIn
+        type: Bool
+      - name: passwordProfile__forceChangePasswordNextSignInWithMfa
+        externalId: passwordProfile__forceChangePasswordNextSignInWithMfa
+        type: Bool
+  Group:
+    description: "Group Entity in Time Sheet"
+    displayName: TimeSheetGroup
+    externalId: Group
+    syncFrequency: HOURLY
+    syncMinInterval: 1
+    apiCallFrequency: SECONDLY
+    apiCallMinInterval: 1
+    pageSize: 999
+    pagesOrderedById: false
+    attributes:
+      - name: id
+        externalId: id
+        type: String
+        indexed: true
+        uniqueId: true
+      - name: classification
+        externalId: classification
+        type: String
+      - name: createdDateTime
+        externalId: createdDateTime
+        type: DateTime
+      - name: creationOptions
+        externalId: creationOptions
+        type: String
+        list: true
+      - name: deletedDateTime
+        externalId: deletedDateTime
+        type: DateTime
+      - name: description
+        externalId: description
+        type: String
+      - name: displayName
+        externalId: displayName
+        type: String
+      - name: expirationDateTime
+        externalId: expirationDateTime
+        type: DateTime
+      - name: groupTypes
+        externalId: groupTypes
+        type: String
+        list: true
+      - name: isAssignableToRole
+        externalId: isAssignableToRole
+        type: Bool
+      - name: mail
+        externalId: mail
+        type: String
+      - name: mailEnabled
+        externalId: mailEnabled
+        type: Bool
+      - name: mailNickname
+        externalId: mailNickname
+        type: String
+      - name: membershipRule
+        externalId: membershipRule
+        type: String
+      - name: membershipRuleProcessingState
+        externalId: membershipRuleProcessingState
+        type: String
+      - name: onPremisesDomainName
+        externalId: onPremisesDomainName
+        type: String
+      - name: onPremisesLastSyncDateTime
+        externalId: onPremisesLastSyncDateTime
+        type: DateTime
+      - name: onPremisesNetBiosName
+        externalId: onPremisesNetBiosName
+        type: String
+      - name: onPremisesSamAccountName
+        externalId: onPremisesSamAccountName
+        type: String
+      - name: onPremisesSecurityIdentifier
+        externalId: onPremisesSecurityIdentifier
+        type: String
+      - name: onPremisesSyncEnabled
+        externalId: onPremisesSyncEnabled
+        type: Bool
+      - name: preferredDataLocation
+        externalId: preferredDataLocation
+        type: String
+      - name: preferredLanguage
+        externalId: preferredLanguage
+        type: String
+      - name: proxyAddresses
+        externalId: proxyAddresses
+        type: String
+        list: true
+      - name: renewedDateTime
+        externalId: renewedDateTime
+        type: DateTime
+      - name: resourceBehaviorOptions
+        externalId: resourceBehaviorOptions
+        type: String
+        list: true
+      - name: resourceProvisioningOptions
+        externalId: resourceProvisioningOptions
+        type: String
+        list: true
+      - name: securityEnabled
+        externalId: securityEnabled
+        type: Bool
+      - name: securityIdentifier
+        externalId: securityIdentifier
+        type: String
+      - name: theme
+        externalId: theme
+        type: String
+      - name: visibility
+        externalId: visibility
+        type: String
+      - name: assignedLabels
+        externalId: assignedLabels
+        type: String
+        list: true
+      - name: licenseProcessingState
+        externalId: licenseProcessingState
+        type: String
+  GroupMember:
+    description: "Group Member Entity in Time Sheet"
+    displayName: TimeSheetGroupMember
+    externalId: GroupMember
+    syncFrequency: HOURLY
+    syncMinInterval: 1
+    apiCallFrequency: SECONDLY
+    apiCallMinInterval: 1
+    pageSize: 999
+    pagesOrderedById: false
+    attributes:
+      - name: id
+        externalId: id
+        type: String
+        indexed: true
+        uniqueId: true
+      - name: groupId
+        externalId: groupId
+        type: String
+        indexed: true
+      - name: memberId
+        externalId: memberId
+        type: String
+        indexed: true
+
+relationships:
+  UserManager:
+    name: Manager
+    fromAttribute: User.manager__id
+    toAttribute: User.id
+    # [TODO sc-11020] Give these a unique ID, rename both of these to Member,
+    # and keep corresponding path relationships unique below
+  UserMember:
+    name: Member
+    fromAttribute: GroupMember.memberId
+    toAttribute: User.id
+  GroupMember:
+    name: Member
+    fromAttribute: GroupMember.memberId
+    toAttribute: Group.id
+  MemberOf:
+    name: MemberOf
+    fromAttribute: GroupMember.groupId
+    toAttribute: Group.id
+  UserMemberGroup:
+    name: Group
+    path:
+      - relationship: UserMember
+        direction: Backward
+      - relationship: MemberOf
+        direction: Forward
+  GroupMemberGroup:
+    name: Group
+    path:
+      - relationship: GroupMember
+        direction: Backward
+      - relationship: MemberOf
+        direction: Forward
